@@ -15,6 +15,7 @@ variables:
 
 jobs:
 - job: deploy_infra
+  displayName: Deploy Infrastructure
   pool:
     vmImage: 'ubuntu-latest'
   steps:
