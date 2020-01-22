@@ -12,8 +12,8 @@ $gValuesFile="configFile.yaml"
 Push-Location $($MyInvocation.InvocationName | Split-Path)
 
 # Update the extension to make sure you have the latest version installed
-($x = az extension add --name aks-preview) | Out-Null
-($x = az extension update --name aks-preview) | Out-Null
+az extension add --name aks-preview 2> $null
+az extension update --name aks-preview 2> $null
 
 Push-Location powershell
 
