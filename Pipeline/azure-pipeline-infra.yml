@@ -30,3 +30,4 @@ jobs:
         -clientId $(spnId) `
         -password $(spnPassword)
       azurePowerShellVersion: latestVersion
+      ErrorActionPreference: continue
