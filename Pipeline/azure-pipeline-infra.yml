@@ -1,0 +1,31 @@
+trigger:
+  - master
+  
+resources:
+  - repo: self
+  
+variables:
+  spnId: cdTailWindSPN
+  # spnPassword must be a secret defined on the pipeline in AzDO
+  # use this to create the SPN: az ad sp create-for-rbac --skip-assignment --name cdTailWindSPN
+  # make a note of the client key
+  resourceGroup: 'cd-tailwind'
+  azureSub: '10m Client Demo'
+  deployfrom: 'Deploy'
+
+jobs:
+- job: deploy_infra
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: $(azureSub)
+      scriptType: filePath
+      scriptPath: $(Build.SourcesDirectory)/Deploy/Deploy-Unified-Pipeline.ps1
+      scriptArguments:
+        -resourceGroup $(resourceGroup) `
+        -location westus2 `
+        -clientId $(spnId) `
+        -password $(spnPassword)
+      azurePowerShellVersion: latestVersion
