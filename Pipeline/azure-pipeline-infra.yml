@@ -18,7 +18,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-    - task: AzurePowerShell@5
+  - task: AzurePowerShell@5
     inputs:
       azureSubscription: $(azureSub)
       scriptType: filePath
