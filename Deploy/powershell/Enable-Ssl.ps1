@@ -63,6 +63,7 @@ az aks get-credentials -g $resourceGroup -n $aksName
 Write-Host "--------------------------------------------------------" -ForegroundColor Yellow
 Write-Host " Enabling Cert Manager on cluster $aksName in RG $resourceGroup"  -ForegroundColor Yellow
 Write-Host " --------------------------------------------------------" -ForegroundColor Yellow
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm upgrade --install cert-manager --namespace kube-system --version v0.4.1 stable/cert-manager
 
 Write-Host "--------------------------------------------------------" -ForegroundColor Yellow
