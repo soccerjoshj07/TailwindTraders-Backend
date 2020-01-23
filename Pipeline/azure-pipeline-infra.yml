@@ -17,12 +17,12 @@ jobs:
 - job: deploy_infra
   displayName: Deploy Infrastructure
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
   - task: AzureCLI@2
     inputs:
       azureSubscription: $(azureSub)
-      scriptType: ps
+      scriptType: pscore
       scriptPath: Deploy-Unified-Pipeline.ps1
       scriptArguments:
         -resourceGroup $(resourceGroup) `
