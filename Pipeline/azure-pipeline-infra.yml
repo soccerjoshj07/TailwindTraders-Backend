@@ -30,4 +30,5 @@ jobs:
         -clientId $(spnId) `
         -password $(spnPassword)
       azurePowerShellVersion: latestVersion
+      powerShellErrorActionPreference: continue
       workingDirectory: $(Build.SourcesDirectory)/Deploy
