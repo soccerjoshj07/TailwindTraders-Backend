@@ -1,5 +1,4 @@
-trigger:
-  - master
+trigger: none  # this should be queued manually
   
 resources:
   - repo: self
