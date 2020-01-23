@@ -5,7 +5,7 @@ resources:
   - repo: self
   
 variables:
-  spnId: cdTailWindSPN
+  spnId: '9ccb96ba-b510-4109-b821-8427f5109971'
   # spnPassword must be a secret defined on the pipeline in AzDO
   # use this to create the SPN: az ad sp create-for-rbac --skip-assignment --name cdTailWindSPN
   # make a note of the client key
@@ -30,5 +30,4 @@ jobs:
         -clientId $(spnId) `
         -password $(spnPassword)
       azurePowerShellVersion: latestVersion
-      powerShellErrorActionPreference: continue
       workingDirectory: $(Build.SourcesDirectory)/Deploy
