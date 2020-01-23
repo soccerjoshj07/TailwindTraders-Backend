@@ -30,3 +30,13 @@ jobs:
       azurePowerShellVersion: latestVersion
       powerShellErrorActionPreference: continue
       workingDirectory: $(Build.SourcesDirectory)/Deploy
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: $(azureSub)
+      scriptType: pscore
+      scriptPath: Deploy/powershell/EnableSsl.ps1
+      scriptArguments:
+        -resourceGroup $(resourceGroup)
+      azurePowerShellVersion: latestVersion
+      powerShellErrorActionPreference: continue
+      workingDirectory: $(Build.SourcesDirectory)/Deploy

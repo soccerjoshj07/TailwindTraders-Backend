@@ -15,8 +15,8 @@ function validate {
     $valid = $true
 
     if ([string]::IsNullOrEmpty($aksName)) {
-        Write-Host "No AKS name. Use -aksName to specify name" -ForegroundColor Red
-        $valid=$false
+        Write-Host "No AKS name. Quering resourceGroup $resourceGroup to calculate name" -ForegroundColor Yellow
+        $aksName = $(az aks list -g $resourceGroup -o json | ConvertFrom-Json).name
     }
     if ([string]::IsNullOrEmpty($resourceGroup))  {
         Write-Host "No resource group. Use -resourceGroup to specify resource group." -ForegroundColor Red
@@ -75,12 +75,12 @@ Join-Path .. helm | Push-Location
 
 if ($sslSupport -eq "staging") {
     Write-Host "Adding TLS/SSL support using Let's Encrypt Staging environment" -ForegroundColor Yellow
-    Write-Host "helm install --name $name-ssl -f $(Join-Path tls-support values-staging.yaml) --set domain=$domain tls-support" -ForegroundColor Yellow
+    Write-Host "helm upgrade --install --name $name-ssl -f $(Join-Path tls-support values-staging.yaml) --set domain=$domain tls-support" -ForegroundColor Yellow
     cmd /c "helm install --name $name-ssl-staging -f $(Join-Path tls-support values-staging.yaml) --set domain=$domain tls-support"
 }
 if ($sslSupport -eq "prod") {
     Write-Host "Adding TLS/SSL support using Let's Encrypt PRODUCTION environment" -ForegroundColor Yellow
-    cmd /c "helm install --name $name-ssl-prod -f $(Join-Path tls-support values-prod.yaml) --set domain=$domain tls-support"
+    cmd /c "helm upgrade --install --name $name-ssl-prod -f $(Join-Path tls-support values-prod.yaml) --set domain=$domain tls-support"
 }
 if ($sslSupport -eq "custom") {
     Write-Host "TLS support is custom bound to domain $domain" -ForegroundColor Yellow
