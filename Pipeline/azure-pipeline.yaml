@@ -1,4 +1,4 @@
-number: 1.0$(Rev:.r)
+name: 1.0$(Rev:.r)
 
 trigger:
 - master
@@ -13,63 +13,94 @@ variables:
   deployWindows: false
   deployfrom: 'Deploy'
 
-jobs:
-- job: Deploy_Scripts
-  displayName: Deploy Scripts
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: CopyFiles@2
-    displayName: Copy release scripts
-    inputs:
-      SourceFolder: '$(deployfrom)'
-      Contents: '**'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  - task: PublishBuildArtifacts@1
-    displayName: Publish scripts artifact
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'deploy'
-      publishLocation: 'Container'
+stages:
+- stage: build
+  displayName: Build Images
+  jobs:
+  - job: Deploy_Scripts
+    displayName: Deploy Scripts
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: CopyFiles@2
+      displayName: Copy release scripts
+      inputs:
+        SourceFolder: '$(deployfrom)'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      displayName: Publish scripts artifact
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'deploy'
+        publishLocation: 'Container'
 
-- job: Build_Linux
-  displayName: Build Linux Containers
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: AzureCLI@1
-    displayName: Build and Push to ACR 
-    inputs:
-      azureSubscription: '$(subscription)'
-      scriptLocation: 'inlineScript'
-      inlineScript: 'pwsh -File Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId)'
-      addSpnToEnvironment: true
-      useGlobalConfig: true
+  - job: Build_Linux
+    displayName: Build Linux Containers
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@1
+      displayName: Build and Push to ACR 
+      inputs:
+        azureSubscription: '$(subscription)'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'pwsh -File Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId)'
+        addSpnToEnvironment: true
+        useGlobalConfig: true
+        workingDirectory: 'Deploy/powershell'
+
+  - job: Build_Windows
+    displayName: Build Windows Containers
+    condition: and(succeeded(), eq(variables['deployWindows'], 'true'))
+    pool:
+      vmImage: 'windows-2019'
+    steps:
+    - task: NuGetCommand@2
+      inputs:
+        command: 'restore'
+        restoreSolution: '**/Tailwind.Traders.Backend.Rewards.sln'
+        feedsToUse: 'select'
+    - task: MSBuild@1
+      inputs:
+        solution: '**/Tailwind.Traders.Rewards.Registration.Api.csproj'
+        msbuildArchitecture: 'x64'
+        msbuildArguments: '/p:DeployOnBuild=true /p:PublishProfile=FolderProfile.pubxml'
+        clean: true
+    - task: AzureCLI@1
+      displayName: Build and Push to ACR 
+      inputs:
+        azureSubscription: '$(subscription)'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'pwsh -Command .\Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId) -isWindowsMachine 1'
+        addSpnToEnvironment: true
+        useGlobalConfig: true
+        workingDirectory: 'Deploy\powershell'
+
+- stage: dev
+  displayName: Build Images
+  dependsOn: Dev
+  environment:
+    TailWind-Dev
+  jobs:
+  - job: deploy_dev
+    displayName: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - pwsh: Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
       workingDirectory: 'Deploy/powershell'
-
-- job: Build_Windows
-  displayName: Build Windows Containers
-  condition: and(succeeded(), eq(variables['deployWindows'], 'true'))
-  pool:
-    vmImage: 'windows-2019'
-  steps:
-  - task: NuGetCommand@2
-    inputs:
-      command: 'restore'
-      restoreSolution: '**/Tailwind.Traders.Backend.Rewards.sln'
-      feedsToUse: 'select'
-  - task: MSBuild@1
-    inputs:
-      solution: '**/Tailwind.Traders.Rewards.Registration.Api.csproj'
-      msbuildArchitecture: 'x64'
-      msbuildArguments: '/p:DeployOnBuild=true /p:PublishProfile=FolderProfile.pubxml'
-      clean: true
-  - task: AzureCLI@1
-    displayName: Build and Push to ACR 
-    inputs:
-      azureSubscription: '$(subscription)'
-      scriptLocation: 'inlineScript'
-      inlineScript: 'pwsh -Command .\Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId) -isWindowsMachine 1'
-      addSpnToEnvironment: true
-      useGlobalConfig: true
-      workingDirectory: 'Deploy\powershell'
+      displayName: Generate values for environment
+    - task: AzureCLI@2
+      displayName: Create ACR secret for namespace
+      inputs:
+        azureSubscription: $(azureSub)
+        scriptType: pscore
+        scriptPath: Deploy/powershell/Create-Secret.ps1
+        scriptArguments:
+          -resourceGroup $(resourceGroup) `
+          -namespace dev
+        azurePowerShellVersion: latestVersion
+        powerShellErrorActionPreference: continue
+        workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
+    
