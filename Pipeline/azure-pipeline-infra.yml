@@ -36,6 +36,16 @@ jobs:
     inputs:
       helmVersionToInstall: 'v3.0.2'
   - task: AzureCLI@2
+    displayName: Enable Cert Manager in AKS cluster
+    inputs:
+      azureSubscription: $(azureSub)
+      scriptType: pscore
+      scriptPath: Deploy/powershell/Add-Cert-Manager.ps1
+      scriptArguments:
+        -resourceGroup $(resourceGroup)
+      azurePowerShellVersion: latestVersion
+      workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
+  - task: AzureCLI@2
     displayName: Enable SSL support in AKS cluster
     inputs:
       azureSubscription: $(azureSub)
@@ -45,5 +55,4 @@ jobs:
         -resourceGroup $(resourceGroup) `
         -sslSupport staging
       azurePowerShellVersion: latestVersion
-      powerShellErrorActionPreference: continue
       workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
