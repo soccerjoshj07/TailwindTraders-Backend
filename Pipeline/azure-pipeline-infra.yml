@@ -32,6 +32,7 @@ jobs:
   #     powerShellErrorActionPreference: continue
   #     workingDirectory: $(Build.SourcesDirectory)/Deploy
   - task: HelmInstaller@1
+    displayName: Install Helm3 client
     inputs:
       helmVersionToInstall: 'v3.0.2'
   - task: AzureCLI@2

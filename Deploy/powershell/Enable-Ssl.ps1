@@ -76,6 +76,9 @@ if ([String]::IsNullOrEmpty($domain)) {
 Write-Host "TLS/SSL will be bound to domain $domain"
 Join-Path .. helm | Push-Location
 
+Write-Host "Getting k8s cluster credentials"
+az aks get-credentials -r $resourceGroup -n $aksName
+
 if ($sslSupport -eq "staging") {
     Write-Host "Adding TLS/SSL support using Let's Encrypt Staging environment" -ForegroundColor Yellow
     helm upgrade --install "$name-ssl-staging" -f $(Join-Path tls-support values-staging.yaml) --set domain=$domain tls-support
