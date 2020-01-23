@@ -17,6 +17,7 @@ function validate {
     if ([string]::IsNullOrEmpty($aksName)) {
         Write-Host "No AKS name. Quering resourceGroup $resourceGroup to calculate name" -ForegroundColor Yellow
         $aksName = $(az aks list -g $resourceGroup -o json | ConvertFrom-Json).name
+        Write-Host "AKS Name = $aksName"
     }
     if ([string]::IsNullOrEmpty($resourceGroup))  {
         Write-Host "No resource group. Use -resourceGroup to specify resource group." -ForegroundColor Red
@@ -50,9 +51,11 @@ function validate {
     if ($valid -eq $false) {
         exit 1
     }
+
+    $aksName
 }
 
-validate
+$aksName = validate
 
 Write-Host "--------------------------------------------------------" -ForegroundColor Yellow
 Write-Host " Enabling SSL/TLS support on cluster $aksName in RG $resourceGroup"  -ForegroundColor Yellow
