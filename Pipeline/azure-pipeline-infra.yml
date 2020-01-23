@@ -31,6 +31,9 @@ jobs:
   #     azurePowerShellVersion: latestVersion
   #     powerShellErrorActionPreference: continue
   #     workingDirectory: $(Build.SourcesDirectory)/Deploy
+  - task: HelmInstaller@1
+    inputs:
+      helmVersionToInstall: 'v3.0.2'
   - task: AzureCLI@2
     displayName: Enable SSL support in AKS cluster
     inputs:
