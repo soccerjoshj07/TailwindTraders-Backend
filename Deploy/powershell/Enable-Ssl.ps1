@@ -77,7 +77,7 @@ Write-Host "TLS/SSL will be bound to domain $domain"
 Join-Path .. helm | Push-Location
 
 Write-Host "Getting k8s cluster credentials"
-az aks get-credentials -r $resourceGroup -n $aksName
+az aks get-credentials -g $resourceGroup -n $aksName
 
 if ($sslSupport -eq "staging") {
     Write-Host "Adding TLS/SSL support using Let's Encrypt Staging environment" -ForegroundColor Yellow
