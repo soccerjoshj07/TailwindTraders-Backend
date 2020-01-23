@@ -5,20 +5,15 @@ Param(
     [parameter(Mandatory=$true)][string]$location,
     [parameter(Mandatory=$false)][string]$clientId,
     [parameter(Mandatory=$false)][string]$password,
-    [parameter(Mandatory=$false)][string]$rootFolder,
     [parameter(Mandatory=$false)][bool]$deployAks=$true
 )
 $gValuesFile="configFile.yaml"
 
-if (!$rootFolder) { $rootFolder = $($MyInvocation.InvocationName | Split-Path) }
-
-Push-Location $rootFolder
+Push-Location $($MyInvocation.InvocationName | Split-Path)
 
 # Update the extension to make sure you have the latest version installed
 az extension add --name aks-preview 2> $null
 az extension update --name aks-preview 2> $null
-
-az account show
 
 Push-Location powershell
 
