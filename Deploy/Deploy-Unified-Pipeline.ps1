@@ -18,6 +18,8 @@ Push-Location $rootFolder
 az extension add --name aks-preview 2> $null
 az extension update --name aks-preview 2> $null
 
+az account show
+
 Push-Location powershell
 
 # Deploy ARM
