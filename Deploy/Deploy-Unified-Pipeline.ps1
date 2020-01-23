@@ -10,8 +10,7 @@ Param(
 )
 $gValuesFile="configFile.yaml"
 
-if (-not($rootFolder))
-    $rootFolder = $($MyInvocation.InvocationName | Split-Path)
+if (!$rootFolder) { $rootFolder = $($MyInvocation.InvocationName | Split-Path) }
 
 Push-Location $rootFolder
 
