@@ -5,11 +5,15 @@ Param(
     [parameter(Mandatory=$true)][string]$location,
     [parameter(Mandatory=$false)][string]$clientId,
     [parameter(Mandatory=$false)][string]$password,
+    [parameter(Mandatory=$false)][string]$rootFolder,
     [parameter(Mandatory=$false)][bool]$deployAks=$true
 )
 $gValuesFile="configFile.yaml"
 
-Push-Location $($MyInvocation.InvocationName | Split-Path)
+if (-not($rootFolder))
+    $rootFolder = $($MyInvocation.InvocationName | Split-Path)
+
+Push-Location $rootFolder
 
 # Update the extension to make sure you have the latest version installed
 az extension add --name aks-preview 2> $null
