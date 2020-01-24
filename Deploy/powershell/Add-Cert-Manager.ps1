@@ -31,3 +31,5 @@ kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release
 
 # Install the cert-manager Helm chart
 helm upgrade cert-manager --namespace cert-manager --version v0.4.1 jetstack/cert-manager
+
+kubectl config set-context $aksName --namespace default
