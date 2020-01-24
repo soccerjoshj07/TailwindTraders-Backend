@@ -14,12 +14,6 @@ if ([string]::IsNullOrEmpty($aksName)) {
 Write-Host "Getting k8s cluster credentials"
 az aks get-credentials -g $resourceGroup -n $aksName
 
-$ns = kubectl get namespaces | Out-string
-if (!$ns.Contains("cert-manager")) { kubectl create namespace cert-manager }
-
-# workaround for bug for cert-manager with Helm3
-kubectl config set-context $aksName --namespace cert-manager
-
 Write-Host "--------------------------------------------------------" -ForegroundColor Yellow
 Write-Host " Enabling Cert Manager on cluster $aksName in RG $resourceGroup"  -ForegroundColor Yellow
 Write-Host " --------------------------------------------------------" -ForegroundColor Yellow
@@ -30,6 +24,4 @@ helm repo update
 kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.13/deploy/manifests/00-crds.yaml
 
 # Install the cert-manager Helm chart
-helm upgrade --install cert-manager --namespace cert-manager --version --version v0.13.0 jetstack/cert-manager
-
-kubectl config set-context $aksName --namespace default
+helm upgrade cert-manager --install --version --version v0.13.0 jetstack/cert-manager
