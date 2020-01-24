@@ -24,4 +24,4 @@ helm repo update
 kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.13/deploy/manifests/00-crds.yaml
 
 # Install the cert-manager Helm chart
-helm upgrade cert-manager jetstack/cert-manager --install --version --version v0.13.0
+helm upgrade --install cert-manager jetstack/cert-manager --version v0.13.0
