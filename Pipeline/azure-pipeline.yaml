@@ -79,7 +79,7 @@ stages:
 
 - stage: dev
   displayName: Build Images
-  dependsOn: Dev
+  dependsOn: build
   jobs:
   - deployment: deploy_dev
     displayName: Deploy
