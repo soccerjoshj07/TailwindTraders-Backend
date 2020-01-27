@@ -104,7 +104,7 @@ stages:
           #     azurePowerShellVersion: latestVersion
           #     powerShellErrorActionPreference: continue
           #     workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
-          - pwsh: az extension add --name application-insights 2> $null
+          - script: az extension add --name application-insights 2>&1
             displayName: Install AppInsights az cli extension
           - task: AzureCLI@2
             displayName: Generate config for environment
