@@ -116,9 +116,9 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-              aksName=$(az aks list -g $(resourceGroup) --query [0].name -o tsv)
-              hname=$(az aks show -n $(aksName) -g $(resourceGroup) --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o tsv)
-              echo "##vso[task.setvariable variable=IngressHost;]$hname"
+                aksName=$(az aks list -g $(resourceGroup) --query [0].name -o tsv)
+                hname=$(az aks show -n $(aksName) -g $(resourceGroup) --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o tsv)
+                echo "##vso[task.setvariable variable=IngressHost;]$hname"
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
