@@ -95,6 +95,7 @@ stages:
         deploy:
           steps:
           - checkout: self
+          - download: none
           - task: AzureCLI@2
             displayName: Generate config for environment
             inputs:
