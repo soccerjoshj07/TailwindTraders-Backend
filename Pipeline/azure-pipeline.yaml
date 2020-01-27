@@ -94,7 +94,7 @@ stages:
           - task: AzureCLI@2
             displayName: Create ACR secret for namespace
             inputs:
-              azureSubscription: $(azureSub)
+              azureSubscription: $(subscription)
               scriptType: pscore
               scriptPath: Deploy/powershell/Create-Secret.ps1
               scriptArguments:
