@@ -91,6 +91,7 @@ stages:
       runOnce:
         deploy:
           steps:
+          - checkout: self
           # - task: AzureCLI@2
           #   displayName: Create ACR secret for namespace
           #   inputs:
