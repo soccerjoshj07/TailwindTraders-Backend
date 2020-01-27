@@ -87,20 +87,26 @@ stages:
       TailWind-Dev
     pool:
       vmImage: 'ubuntu-latest'
-    steps:
-    - pwsh: Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
-      workingDirectory: 'Deploy/powershell'
-      displayName: Generate values for environment
-    - task: AzureCLI@2
-      displayName: Create ACR secret for namespace
-      inputs:
-        azureSubscription: $(azureSub)
-        scriptType: pscore
-        scriptPath: Deploy/powershell/Create-Secret.ps1
-        scriptArguments:
-          -resourceGroup $(resourceGroup) `
-          -namespace dev
-        azurePowerShellVersion: latestVersion
-        powerShellErrorActionPreference: continue
-        workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
+    strategy:
+      runOnce:
+        predeploy:
+          steps:
+          - task: AzureCLI@2
+            displayName: Create ACR secret for namespace
+            inputs:
+              azureSubscription: $(azureSub)
+              scriptType: pscore
+              scriptPath: Deploy/powershell/Create-Secret.ps1
+              scriptArguments:
+                -resourceGroup $(resourceGroup) `
+                -namespace dev
+              azurePowerShellVersion: latestVersion
+              powerShellErrorActionPreference: continue
+              workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
+        deploy:
+          steps:
+          - pwsh: Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
+            displayName: Generate values for environment
+            workingDirectory: 'Deploy/powershell'
+    
     
