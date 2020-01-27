@@ -104,10 +104,10 @@ stages:
           #     azurePowerShellVersion: latestVersion
           #     powerShellErrorActionPreference: continue
           #     workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
-          - pwsh: Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
+          - pwsh: ./Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
             displayName: Generate values for environment
-            workingDirectory: 'Deploy/powershell'
+            workingDirectory: '$(Build.SourcesDirectory)/Deploy/powershell'
           - script: echo ..\helm\__values\values.yml
-            workingDirectory: 'Deploy/powershell'
+            workingDirectory: '$(Build.SourcesDirectory)/Deploy/powershell'
     
     
