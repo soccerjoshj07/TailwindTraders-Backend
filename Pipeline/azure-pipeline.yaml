@@ -104,9 +104,17 @@ stages:
           #     azurePowerShellVersion: latestVersion
           #     powerShellErrorActionPreference: continue
           #     workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
-          - pwsh: ./Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
-            displayName: Generate values for environment
-            workingDirectory: '$(Build.SourcesDirectory)/Deploy/powershell'
+          - task: AzureCLI@2
+            displayName: Generate config for environment
+            inputs:
+              azureSubscription: $(subscription)
+              scriptType: pscore
+              scriptPath: $(Build.SourcesDirectory)/Deploy/powershell/Generate-Config.ps1
+              scriptArguments:
+                -resourceGroup $(resourceGroup) `
+                -outputFile ..\helm\__values\values.yml
+              azurePowerShellVersion: latestVersion
+              workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
           - script: cat ..\helm\__values\values.yml
             workingDirectory: '$(Build.SourcesDirectory)/Deploy/powershell'
     
