@@ -89,24 +89,21 @@ stages:
       vmImage: 'ubuntu-latest'
     strategy:
       runOnce:
-        predeploy:
-          steps:
-          - task: AzureCLI@2
-            displayName: Create ACR secret for namespace
-            inputs:
-              azureSubscription: $(azureSub)
-              scriptType: pscore
-              scriptPath: Deploy/powershell/Create-Secret.ps1
-              scriptArguments:
-                -resourceGroup $(resourceGroup) `
-                -namespace dev
-              azurePowerShellVersion: latestVersion
-              powerShellErrorActionPreference: continue
-              workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
-        deploy:
-          steps:
-          - pwsh: Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
-            displayName: Generate values for environment
-            workingDirectory: 'Deploy/powershell'
+        steps:
+        - task: AzureCLI@2
+          displayName: Create ACR secret for namespace
+          inputs:
+            azureSubscription: $(azureSub)
+            scriptType: pscore
+            scriptPath: Deploy/powershell/Create-Secret.ps1
+            scriptArguments:
+              -resourceGroup $(resourceGroup) `
+              -namespace dev
+            azurePowerShellVersion: latestVersion
+            powerShellErrorActionPreference: continue
+            workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
+        - pwsh: Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
+          displayName: Generate values for environment
+          workingDirectory: 'Deploy/powershell'
     
     
