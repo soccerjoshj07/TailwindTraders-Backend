@@ -14,43 +14,43 @@ variables:
   deployfrom: 'Deploy'
 
 stages:
-- stage: build
-  displayName: Build Images
-  jobs:
-  - job: Deploy_Scripts
-    displayName: Deploy Scripts
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: CopyFiles@2
-      displayName: Copy release scripts
-      inputs:
-        SourceFolder: '$(deployfrom)'
-        Contents: '**'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    - task: PublishBuildArtifacts@1
-      displayName: Publish scripts artifact
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'deploy'
-        publishLocation: 'Container'
+# - stage: build
+#   displayName: Build Images
+#   jobs:
+#   - job: Deploy_Scripts
+#     displayName: Deploy Scripts
+#     pool:
+#       vmImage: 'ubuntu-latest'
+#     steps:
+#     - task: CopyFiles@2
+#       displayName: Copy release scripts
+#       inputs:
+#         SourceFolder: '$(deployfrom)'
+#         Contents: '**'
+#         TargetFolder: '$(Build.ArtifactStagingDirectory)'
+#     - task: PublishBuildArtifacts@1
+#       displayName: Publish scripts artifact
+#       inputs:
+#         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#         ArtifactName: 'deploy'
+#         publishLocation: 'Container'
 
-  - job: Build_Linux
-    displayName: Build Linux Containers
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: AzureCLI@1
-      displayName: Build and Push to ACR 
-      inputs:
-        azureSubscription: '$(subscription)'
-        scriptLocation: 'inlineScript'
-        inlineScript: 'pwsh -File Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId)'
-        addSpnToEnvironment: true
-        useGlobalConfig: true
-        workingDirectory: 'Deploy/powershell'
+#   - job: Build_Linux
+#     displayName: Build Linux Containers
+#     pool:
+#       vmImage: 'ubuntu-latest'
+#     steps:
+#     - task: AzureCLI@1
+#       displayName: Build and Push to ACR 
+#       inputs:
+#         azureSubscription: '$(subscription)'
+#         scriptLocation: 'inlineScript'
+#         inlineScript: 'pwsh -File Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId)'
+#         addSpnToEnvironment: true
+#         useGlobalConfig: true
+#         workingDirectory: 'Deploy/powershell'
 
-  - job: Build_Windows
+#   - job: Build_Windows
     displayName: Build Windows Containers
     condition: and(succeeded(), eq(variables['deployWindows'], 'true'))
     pool:
@@ -79,7 +79,7 @@ stages:
 
 - stage: dev
   displayName: Build Images
-  dependsOn: build
+  #dependsOn: build
   jobs:
   - deployment: deploy_dev
     displayName: Deploy
@@ -91,20 +91,22 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: AzureCLI@2
-            displayName: Create ACR secret for namespace
-            inputs:
-              azureSubscription: $(subscription)
-              scriptType: pscore
-              scriptPath: Deploy/powershell/Create-Secret.ps1
-              scriptArguments:
-                -resourceGroup $(resourceGroup) `
-                -namespace dev
-              azurePowerShellVersion: latestVersion
-              powerShellErrorActionPreference: continue
-              workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
+          # - task: AzureCLI@2
+          #   displayName: Create ACR secret for namespace
+          #   inputs:
+          #     azureSubscription: $(subscription)
+          #     scriptType: pscore
+          #     scriptPath: Deploy/powershell/Create-Secret.ps1
+          #     scriptArguments:
+          #       -resourceGroup $(resourceGroup) `
+          #       -namespace dev
+          #     azurePowerShellVersion: latestVersion
+          #     powerShellErrorActionPreference: continue
+          #     workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
           - pwsh: Generate-Config.ps1 -resourceGroup $(resourceGroup) -outputFile ..\helm\__values\values.yml
             displayName: Generate values for environment
+            workingDirectory: 'Deploy/powershell'
+          - script: echo ..\helm\__values\values.yml
             workingDirectory: 'Deploy/powershell'
     
     
