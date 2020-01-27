@@ -19,8 +19,9 @@ function validate {
     $valid = $true
 
     if ([string]::IsNullOrEmpty($aksName)) {
-        Write-Host "No AKS name. Use -aksName to specify name" -ForegroundColor Red
-        $valid=$false
+        Write-Host "No AKS name. Quering resourceGroup $resourceGroup to calculate name" -ForegroundColor Yellow
+        $aksName = $(az aks list -g $resourceGroup -o json | ConvertFrom-Json).name
+        Write-Host "AKS Name = $aksName"
     }
     if ([string]::IsNullOrEmpty($resourceGroup))  {
         Write-Host "No resource group. Use -resourceGroup to specify resource group." -ForegroundColor Red
@@ -107,6 +108,9 @@ validate
 
 Push-Location $($MyInvocation.InvocationName | Split-Path)
 Push-Location $(Join-Path .. helm)
+
+Write-Host "Getting k8s cluster credentials"
+az aks get-credentials -g $resourceGroup -n $aksName --overwrite-existing
 
 Write-Host "Deploying charts $charts" -ForegroundColor Yellow
 
