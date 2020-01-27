@@ -51,31 +51,31 @@ stages:
 #         workingDirectory: 'Deploy/powershell'
 
 #   - job: Build_Windows
-    displayName: Build Windows Containers
-    condition: and(succeeded(), eq(variables['deployWindows'], 'true'))
-    pool:
-      vmImage: 'windows-2019'
-    steps:
-    - task: NuGetCommand@2
-      inputs:
-        command: 'restore'
-        restoreSolution: '**/Tailwind.Traders.Backend.Rewards.sln'
-        feedsToUse: 'select'
-    - task: MSBuild@1
-      inputs:
-        solution: '**/Tailwind.Traders.Rewards.Registration.Api.csproj'
-        msbuildArchitecture: 'x64'
-        msbuildArguments: '/p:DeployOnBuild=true /p:PublishProfile=FolderProfile.pubxml'
-        clean: true
-    - task: AzureCLI@1
-      displayName: Build and Push to ACR 
-      inputs:
-        azureSubscription: '$(subscription)'
-        scriptLocation: 'inlineScript'
-        inlineScript: 'pwsh -Command .\Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId) -isWindowsMachine 1'
-        addSpnToEnvironment: true
-        useGlobalConfig: true
-        workingDirectory: 'Deploy\powershell'
+    # displayName: Build Windows Containers
+    # condition: and(succeeded(), eq(variables['deployWindows'], 'true'))
+    # pool:
+    #   vmImage: 'windows-2019'
+    # steps:
+    # - task: NuGetCommand@2
+    #   inputs:
+    #     command: 'restore'
+    #     restoreSolution: '**/Tailwind.Traders.Backend.Rewards.sln'
+    #     feedsToUse: 'select'
+    # - task: MSBuild@1
+    #   inputs:
+    #     solution: '**/Tailwind.Traders.Rewards.Registration.Api.csproj'
+    #     msbuildArchitecture: 'x64'
+    #     msbuildArguments: '/p:DeployOnBuild=true /p:PublishProfile=FolderProfile.pubxml'
+    #     clean: true
+    # - task: AzureCLI@1
+      # displayName: Build and Push to ACR 
+      # inputs:
+      #   azureSubscription: '$(subscription)'
+      #   scriptLocation: 'inlineScript'
+      #   inlineScript: 'pwsh -Command .\Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId) -isWindowsMachine 1'
+      #   addSpnToEnvironment: true
+      #   useGlobalConfig: true
+      #   workingDirectory: 'Deploy\powershell'
 
 - stage: dev
   displayName: Build Images
