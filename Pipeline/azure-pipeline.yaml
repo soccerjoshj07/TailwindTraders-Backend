@@ -87,7 +87,7 @@ stages:
   - deployment: deploy_dev
     displayName: Deploy
     environment:
-      TailWind-Dev.aksnamespace
+      TailWind-Dev
     pool:
       vmImage: 'ubuntu-latest'
     strategy:
@@ -127,7 +127,7 @@ stages:
               namespace: dev
               dockerRegistryEndpoint: $(acrConnection)
           - task: KubernetesManifest@0
-            name: bake-products-api
+            name: bake_products_api
             displayName: Bake products-api manifest
             inputs:
               action: bake
