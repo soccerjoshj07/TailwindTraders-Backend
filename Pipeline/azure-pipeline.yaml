@@ -80,11 +80,11 @@ stages:
 - stage: dev
   displayName: Build Images
   dependsOn: Dev
-  environment:
-    TailWind-Dev
   jobs:
-  - job: deploy_dev
+  - deployment: deploy_dev
     displayName: Deploy
+    environment:
+      TailWind-Dev
     pool:
       vmImage: 'ubuntu-latest'
     steps:
