@@ -17,20 +17,20 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  # - task: AzureCLI@2
-  #   displayName: Deploy AKS and other resources
-  #   inputs:
-  #     azureSubscription: $(azureSub)
-  #     scriptType: pscore
-  #     scriptPath: Deploy/Deploy-Unified-Pipeline.ps1
-  #     scriptArguments:
-  #       -resourceGroup $(resourceGroup) `
-  #       -location westus2 `
-  #       -clientId $(spnId) `
-  #       -password $(spnPassword)
-  #     azurePowerShellVersion: latestVersion
-  #     powerShellErrorActionPreference: continue
-  #     workingDirectory: $(Build.SourcesDirectory)/Deploy
+  - task: AzureCLI@2
+    displayName: Deploy AKS and other resources
+    inputs:
+      azureSubscription: $(azureSub)
+      scriptType: pscore
+      scriptPath: Deploy/Deploy-Unified-Pipeline.ps1
+      scriptArguments:
+        -resourceGroup $(resourceGroup) `
+        -location westus2 `
+        -clientId $(spnId) `
+        -password $(spnPassword)
+      azurePowerShellVersion: latestVersion
+      powerShellErrorActionPreference: continue
+      workingDirectory: $(Build.SourcesDirectory)/Deploy
   - task: HelmInstaller@1
     displayName: Install Helm3 client
     inputs:
