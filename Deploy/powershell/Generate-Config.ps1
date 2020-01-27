@@ -9,6 +9,12 @@ Param (
     [parameter(Mandatory=$false)][string]$ingressClass="addon-http-application-routing"
 )
 
+try {
+    az extension add --name application-insights 2> $null
+} catch {
+    # ignore
+}
+
 function EnsureAndReturnFirstItem($arr, $restype) {
     if (-not $arr -or $arr.Length -ne 1) {
         Write-Host "Fatal: No $restype found (or found more than one)" -ForegroundColor Red
