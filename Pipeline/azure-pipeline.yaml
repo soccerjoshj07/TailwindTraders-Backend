@@ -140,7 +140,7 @@ stages:
                 image.tag:$(Build.BuildNumber)
                 hpa.activated:$(autoscale)
                 ingress.tls[0].secretName:tt-letsencrypt-staging
-                ingress.tls[0].hosts:'{$(IngressHost)}'
+                ingress.tls[0].hosts:{'$(IngressHost)'}
           - task: KubernetesManifest@0
             displayName: Deploy products-api to k8s
             inputs:
