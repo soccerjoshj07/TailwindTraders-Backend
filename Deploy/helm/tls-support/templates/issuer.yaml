@@ -3,12 +3,13 @@ kind: Issuer
 metadata:
   name: {{ .Values.issuerName }}
   namespace: default
-  environment: {{ .Values.environment }}
-  app: {{ .Values.applicationName }}
 spec:
   acme:
     server: {{ .Values.server }}
     email: not@used.com
     privateKeySecretRef:
       name: {{ .Values.issuerSecretName }}
-    http01: {}
+    solvers:
+    - http01: 
+        ingress:
+          class: {{ .Values.ingressClass }}

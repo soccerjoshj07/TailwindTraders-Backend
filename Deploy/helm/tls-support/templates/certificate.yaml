@@ -3,20 +3,11 @@ kind: Certificate
 metadata:
   name: {{ .Values.certName }}
   namespace: default
-  environment: {{ .Values.environment }}
-  app: {{ .Values.applicationName }}
 spec:
   secretName: {{ .Values.certSecretName }}
-  issuerRef:
-    name: {{ .Values.issuerName }}
-    environment: {{ .Values.environment }}
-    app: {{ .Values.applicationName }}
-  commonName: {{ .Values.domain }}
   dnsNames:
   - {{ .Values.domain }}
-  acme:
-    config:
-    - http01:
-        ingressClass: {{ .Values.ingressClass }}
-      domains:
-      - {{ .Values.domain }}
+  issuerRef:
+    name: {{ .Values.issuerName }}
+    kind: Issuer
+    group: cert-manager.io
