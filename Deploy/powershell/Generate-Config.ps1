@@ -11,6 +11,9 @@ Param (
 
 try {
     az extension add --name application-insights 2> $null
+    az extension list
+    az monitor app-insights component show
+    Write-Host "All good here"
 } catch {
     # ignore
 }

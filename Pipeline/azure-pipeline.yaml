@@ -112,10 +112,10 @@ stages:
               scriptPath: $(Build.SourcesDirectory)/Deploy/powershell/Generate-Config.ps1
               scriptArguments:
                 -resourceGroup $(resourceGroup) `
-                -outputFile ..\helm\__values\values.yml
+                -outputFile ../helm/__values/values.yml
               azurePowerShellVersion: latestVersion
               workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
-          - script: cat ..\helm\__values\values.yml
+          - script: cat ../helm/__values/values.yml
             workingDirectory: '$(Build.SourcesDirectory)/Deploy/powershell'
     
     
