@@ -87,7 +87,7 @@ stages:
   - deployment: deploy_dev
     displayName: Deploy
     environment:
-      TailWind-Dev
+      TailWindAKS-Dev.dev   # the name of the Environment, period, name of the namespace. Approvals are on environment!
     pool:
       vmImage: 'ubuntu-latest'
     strategy:
