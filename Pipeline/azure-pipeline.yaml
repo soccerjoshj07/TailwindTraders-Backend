@@ -135,10 +135,10 @@ stages:
               helmChart: $(Build.SourcesDirectory)/Deploy/helm/products-api
               overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
               overrides: |
-                ingress.hosts='$(IngressHost)'
-                image.repository=product.api
-                image.tag=$(Build.BuildNumber)
-                hpa.activated=$(autoscale)
+                ingress.hosts:'$(IngressHost)'
+                image.repository:product.api
+                image.tag:$(Build.BuildNumber)
+                hpa.activated:$(autoscale)
           - task: KubernetesManifest@0
             displayName: Deploy products-api to k8s
             inputs:
