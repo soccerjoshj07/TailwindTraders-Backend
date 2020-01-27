@@ -124,7 +124,6 @@ stages:
             inputs:
               action: createSecret
               secretName: $(imagePullSecret)
-              namespace: dev
               dockerRegistryEndpoint: $(acrConnection)
           - task: KubernetesManifest@0
             name: bake_products_api
@@ -134,7 +133,6 @@ stages:
               renderType: helm2
               releaseName: products-api-dev
               helmChart: $(Build.SourcesDirectory)/Deploy/helm/products-api
-              namespace: dev
               overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
               overrides: |
                 ingress.hosts='$(IngressHost)'
@@ -144,7 +142,6 @@ stages:
           - task: KubernetesManifest@0
             displayName: Deploy products-api to k8s
             inputs:
-              namespace: dev
               manifests: $(bake-products-api.manifestsBundle)
     
     
