@@ -101,7 +101,7 @@ stages:
           - checkout: self
           - download: none
           - task: AzureCLI@2
-            displayName: Deploy images
+            displayName: Deploy pictures
             inputs:
               azureSubscription: $(subscription)
               scriptType: pscore
