@@ -152,26 +152,108 @@ stages:
               ingressHost: $(IngressHost)
               tag: $(tag)
               autoscale: $(autoscale)
-          # - task: KubernetesManifest@0
-          #   name: bake_products_api
-          #   displayName: Bake products-api manifest
-          #   inputs:
-          #     action: bake
-          #     renderType: helm2
-          #     releaseName: products-api-dev
-          #     helmChart: $(Build.SourcesDirectory)/Deploy/helm/products-api
-          #     overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
-          #     overrides: |
-          #       ingress.hosts:{'$(IngressHost)'}
-          #       image.repository:$(acrName).azurecr.io/product.api
-          #       image.tag:$(tag)
-          #       hpa.activated:$(autoscale)
-          #       ingress.tls[0].secretName:tt-letsencrypt-staging
-          #       ingress.tls[0].hosts:{'$(IngressHost)'}
-          # - task: KubernetesManifest@0
-          #   displayName: Deploy products-api to k8s
-          #   inputs:
-          #     manifests: $(bake_products_api.manifestsBundle)
-          #     imagePullSecrets: $(imagePullSecret)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'coupons-api'
+              serviceShortName: couponsapi
+              environment: dev
+              imageRepo: 'coupon.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'profiles-api'
+              serviceShortName: profilesapi
+              environment: dev
+              imageRepo: 'profile.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'popular-products-api'
+              serviceShortName: popularproductsapi
+              environment: dev
+              imageRepo: 'popular-product.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'stock-api'
+              serviceShortName: stockapi
+              environment: dev
+              imageRepo: 'stock.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'image-classifier-api'
+              serviceShortName: imageclassifierapi
+              environment: dev
+              imageRepo: 'image-classifier.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'cart-api'
+              serviceShortName: cartapi
+              environment: dev
+              imageRepo: 'cart.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'login-api'
+              serviceShortName: loginapi
+              environment: dev
+              imageRepo: 'login.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'mobilebff'
+              serviceShortName: mobilebff
+              environment: dev
+              imageRepo: 'mobileapigw'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'webbff'
+              serviceShortName: webbff
+              environment: dev
+              imageRepo: 'webapigw'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          - template: templates/step-deploy-container-service.yml
+            condition: eq(variables['deployWindows'], 'true')
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'rewards-registration-api'
+              serviceShortName: rewardsregistrationapi
+              environment: dev
+              imageRepo: 'rewards.registration.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+              
+          
     
     
