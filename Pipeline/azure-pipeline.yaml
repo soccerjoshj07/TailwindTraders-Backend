@@ -142,7 +142,7 @@ stages:
             inputs:
               action: deploy
               manifests: $(Build.SourcesDirectory)/Deploy/helm/ttsa.yaml  ## has the name of the acr secret hard-coded
-          - template: Pipeline/templates/step-deploy-container-service.yml
+          - template: templates/step-deploy-container-service.yml
             parameters:
               acrName: $(acrName)
               serviceName: 'product-api'
