@@ -145,8 +145,8 @@ stages:
           - template: templates/step-deploy-container-service.yml
             parameters:
               acrName: $(acrName)
-              serviceName: 'product-api'
-              serviceShortName: productapi
+              serviceName: 'products-api'
+              serviceShortName: productsapi
               environment: dev
               imageRepo: 'product.api'
               ingressHost: $(IngressHost)
