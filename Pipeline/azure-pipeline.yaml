@@ -16,7 +16,7 @@ variables:
   deployWindows: false
   deployfrom: 'Deploy'
   tagOverride: '1.0.32' # ''
-  tag: coalesce(variables['tagOverride'], variabes['build.buildnumber'])
+  tag: $[coalesce(variables['tagOverride'], variabes['build.buildnumber'])]
 
 stages:
 - stage: build
