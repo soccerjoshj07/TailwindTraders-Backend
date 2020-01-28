@@ -108,6 +108,8 @@ stages:
               scriptPath: $(Build.SourcesDirectory)/Deploy/powershell/Deploy-Pictures-Azure.ps1
               scriptArguments:
                 -resourceGroup $(resourceGroup)
+              azurePowerShellVersion: latestVersion
+              workingDirectory: $(Build.SourcesDirectory)/Deploy/powershell
           - task: AzureCLI@2
             displayName: Generate config for environment
             inputs:
