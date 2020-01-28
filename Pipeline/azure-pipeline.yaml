@@ -48,7 +48,7 @@ stages:
 #       inputs:
 #         azureSubscription: '$(subscription)'
 #         scriptLocation: 'inlineScript'
-#         inlineScript: 'pwsh -File Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildId)'
+#         inlineScript: 'pwsh -File Build-Push.ps1 -resourceGroup $(resourceGroup) -acrName $(acrName) -dockerTag $(Build.BuildNumber)'
 #         addSpnToEnvironment: true
 #         useGlobalConfig: true
 #         workingDirectory: 'Deploy/powershell'
@@ -144,7 +144,7 @@ stages:
               overrides: |
                 ingress.hosts:{'$(IngressHost)'}
                 image.repository:$(acrName).azurecr.io/product.api
-                image.tag:1.0.27
+                image.tag:1984
                 hpa.activated:$(autoscale)
                 ingress.tls[0].secretName:tt-letsencrypt-staging
                 ingress.tls[0].hosts:{'$(IngressHost)'}
