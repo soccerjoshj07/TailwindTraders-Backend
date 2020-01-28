@@ -142,7 +142,7 @@ stages:
               overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
               overrides: |
                 ingress.hosts:{'$(IngressHost)'}
-                image.repository:product.api
+                image.repository:$(acrName).azurecr.io/product.api
                 image.tag:$(Build.BuildNumber)
                 hpa.activated:$(autoscale)
                 ingress.tls[0].secretName:tt-letsencrypt-staging
