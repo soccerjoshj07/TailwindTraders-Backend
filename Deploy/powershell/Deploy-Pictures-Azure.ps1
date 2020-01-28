@@ -2,12 +2,12 @@
 
 Param(
     [parameter(Mandatory=$true)][string]$resourceGroup,
-    [parameter(Mandatory=$false)][string]$storageName = ""
+    [parameter(Mandatory=$false)][string]$storageName
 )
 
-if ($storageName == "") {
+if (-not $storageName) {
     Write-Host "Calculating storage account name" -ForegroundColor Yellow
-    $storageName = $(az storage account list -g cd-tailwind -o json | ConvertFrom-Json).name
+    $storageName = $(az storage account list -g $resourceGroup -o json | ConvertFrom-Json).name
     Write-Host "Using storage account name $storageName" -ForegroundColor Green
 }
 
