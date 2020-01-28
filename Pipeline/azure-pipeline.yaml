@@ -243,7 +243,6 @@ stages:
               tag: $(tag)
               autoscale: $(autoscale)
           - template: templates/step-deploy-container-service.yml
-            condition: eq(variables['deployWindows'], 'true')
             parameters:
               acrName: $(acrName)
               serviceName: 'rewards-registration-api'
@@ -253,6 +252,7 @@ stages:
               ingressHost: $(IngressHost)
               tag: $(tag)
               autoscale: $(autoscale)
+              skip: eq(variables['deployWindows'], 'false')
               
           
     

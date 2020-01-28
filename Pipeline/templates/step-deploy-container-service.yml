@@ -7,11 +7,13 @@ parameters:
   ingressHost: ''
   tag: ''
   autoscale: false
+  skip: false
 
 steps:
   - task: KubernetesManifest@0
-    name: bake_${{ parameters.serviceShortName }}
     displayName: Bake ${{ parameters.serviceName }} manifest
+    condition: eq(parameters.skip, 'false')
+    name: bake_${{ parameters.serviceShortName }}
     inputs:
       action: bake
       renderType: helm2
@@ -27,6 +29,7 @@ steps:
         ingress.tls[0].hosts:{'${{ parameters.ingressHost }}'}
   - task: KubernetesManifest@0
     displayName: Deploy products-api to k8s
+    condition: eq(parameters.skip, 'false')
     inputs:
       manifests: $(bake_${{ parameters.serviceShortName }}.manifestsBundle)
       imagePullSecrets: $(imagePullSecret)
