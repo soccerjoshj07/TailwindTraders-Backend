@@ -17,16 +17,15 @@ variables:
   deployfrom: 'Deploy'
   tagOverride: '1.0.32' # ''
   tag: $[coalesce(variables['tagOverride'], variables['build.buildnumber'])]
-  - name: services
-    value:
-      - serviceShortName: productsapi
-        serviceName: 'products-api'
-        imageRepo: 'product.api'
-        skip: false
-      - serviceShortName: couponsapi
-        serviceName: 'coupons-api'
-        imageRepo: 'coupon.api'
-        skip: false
+  services:
+    - serviceShortName: productsapi
+      serviceName: 'products-api'
+      imageRepo: 'product.api'
+      skip: false
+    - serviceShortName: couponsapi
+      serviceName: 'coupons-api'
+      imageRepo: 'coupon.api'
+      skip: false
   # - serviceName: 'profiles-api'
   #   serviceShortName: profilesapi
   #   imageRepo: 'profile.api'
