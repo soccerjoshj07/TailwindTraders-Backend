@@ -1,0 +1,32 @@
+parameters:
+  acrName: ''
+  serviceName: ''  # product-api
+  serviceShortName: '' # productapi
+  environment: dev
+  imageRepo: ''  # product.api
+  ingressHost: ''
+  tag: ''
+  autoscale: false
+
+steps:
+  - task: KubernetesManifest@0
+    name: bake_${{ parameters.serviceShortName }}
+    displayName: Bake ${{ parameters.serviceName }} manifest
+    inputs:
+      action: bake
+      renderType: helm2
+      releaseName: ${{ parameters.serviceName }}-${{ parameters.environment }}
+      helmChart: $(Build.SourcesDirectory)/Deploy/helm/${{ parameters.serviceName }}
+      overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
+      overrides: |
+        ingress.hosts:{'${{ parameters.ingressHost }}'}
+        image.repository:${{ parameters.acrName }}.azurecr.io/${{ parameters.imageRepo }}
+        image.tag:${{ parameters.tag }}
+        hpa.activated:${{ parameters.autoscale }}
+        ingress.tls[0].secretName:tt-letsencrypt-staging
+        ingress.tls[0].hosts:{'${{ parameters.ingressHost }}'}
+  - task: KubernetesManifest@0
+    displayName: Deploy products-api to k8s
+    inputs:
+      manifests: $(bake_${{ parameters.bakeName }}.manifestsBundle)
+      imagePullSecrets: $(imagePullSecret)

@@ -142,26 +142,36 @@ stages:
             inputs:
               action: deploy
               manifests: $(Build.SourcesDirectory)/Deploy/helm/ttsa.yaml  ## has the name of the acr secret hard-coded
-          - task: KubernetesManifest@0
-            name: bake_products_api
-            displayName: Bake products-api manifest
-            inputs:
-              action: bake
-              renderType: helm2
-              releaseName: products-api-dev
-              helmChart: $(Build.SourcesDirectory)/Deploy/helm/products-api
-              overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
-              overrides: |
-                ingress.hosts:{'$(IngressHost)'}
-                image.repository:$(acrName).azurecr.io/product.api
-                image.tag:$(tag)
-                hpa.activated:$(autoscale)
-                ingress.tls[0].secretName:tt-letsencrypt-staging
-                ingress.tls[0].hosts:{'$(IngressHost)'}
-          - task: KubernetesManifest@0
-            displayName: Deploy products-api to k8s
-            inputs:
-              manifests: $(bake_products_api.manifestsBundle)
-              imagePullSecrets: $(imagePullSecret)
+          - template: Pipeline/templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              serviceName: 'product-api'
+              serviceShortName: productapi
+              environment: dev
+              imageRepo: 'product.api'
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+          # - task: KubernetesManifest@0
+          #   name: bake_products_api
+          #   displayName: Bake products-api manifest
+          #   inputs:
+          #     action: bake
+          #     renderType: helm2
+          #     releaseName: products-api-dev
+          #     helmChart: $(Build.SourcesDirectory)/Deploy/helm/products-api
+          #     overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
+          #     overrides: |
+          #       ingress.hosts:{'$(IngressHost)'}
+          #       image.repository:$(acrName).azurecr.io/product.api
+          #       image.tag:$(tag)
+          #       hpa.activated:$(autoscale)
+          #       ingress.tls[0].secretName:tt-letsencrypt-staging
+          #       ingress.tls[0].hosts:{'$(IngressHost)'}
+          # - task: KubernetesManifest@0
+          #   displayName: Deploy products-api to k8s
+          #   inputs:
+          #     manifests: $(bake_products_api.manifestsBundle)
+          #     imagePullSecrets: $(imagePullSecret)
     
     
