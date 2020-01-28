@@ -151,5 +151,6 @@ stages:
             displayName: Deploy products-api to k8s
             inputs:
               manifests: $(bake_products_api.manifestsBundle)
+              imagePullSecrets: $(imagePullSecret)
     
     
