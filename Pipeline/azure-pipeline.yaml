@@ -85,7 +85,7 @@ stages:
         workingDirectory: 'Deploy\powershell'
 
 - stage: dev
-  displayName: Build Images
+  displayName: Deploy to Dev
   dependsOn: build
   jobs:
   - deployment: deploy_dev
