@@ -20,10 +20,10 @@ variables:
 
 stages:
 - stage: build
-  condition: eq(variables['tagOverride'], '')
   displayName: Build Images
   jobs:
   - job: Deploy_Scripts
+    condition: eq(variables['tagOverride'], '')
     displayName: Deploy Scripts
     pool:
       vmImage: 'ubuntu-latest'
@@ -42,6 +42,7 @@ stages:
         publishLocation: 'Container'
 
   - job: Build_Linux
+    condition: eq(variables['tagOverride'], '')
     displayName: Build Linux Containers
     pool:
       vmImage: 'ubuntu-latest'
@@ -58,7 +59,7 @@ stages:
 
   - job: Build_Windows
     displayName: Build Windows Containers
-    condition: and(succeeded(), eq(variables['deployWindows'], 'true'))
+    condition: and(eq(variables['deployWindows'], 'true'), eq(variables['tagOverride'], ''))
     pool:
       vmImage: 'windows-2019'
     steps:
