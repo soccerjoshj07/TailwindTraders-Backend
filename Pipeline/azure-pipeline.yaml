@@ -18,51 +18,53 @@ variables:
   tagOverride: '1.0.32' # ''
   tag: $[coalesce(variables['tagOverride'], variables['build.buildnumber'])]
   services:
-  - serviceName: 'products-api'
-    serviceShortName: productsapi
-    imageRepo: 'product.api'
-    skip: false
-  - serviceName: 'coupons-api'
-    serviceShortName: couponsapi
-    imageRepo: 'coupon.api'
-    skip: false
-  - serviceName: 'profiles-api'
-    serviceShortName: profilesapi
-    imageRepo: 'profile.api'
-    skip: false
-  - serviceName: 'popular-products-api'
-    serviceShortName: popularproductsapi
-    imageRepo: 'popular-product.api'
-    skip: false
-  - serviceName: 'stock-api'
-    serviceShortName: stockapi
-    imageRepo: 'stock.api'
-    skip: false
-  - serviceName: 'image-classifier-api'
-    serviceShortName: imageclassifierapi
-    imageRepo: 'image-classifier.api'
-    skip: false
-  - serviceName: 'cart-api'
-    serviceShortName: cartapi
-    acrName: $(acrName)
-    imageRepo: 'cart.api'
-    skip: false
-  - serviceName: 'login-api'
-    serviceShortName: loginapi
-    imageRepo: 'login.api'
-    skip: false
-  - serviceName: 'mobilebff'
-    serviceShortName: mobilebff
-    imageRepo: 'mobileapigw'
-    skip: false
-  - serviceName: 'webbff'
-    serviceShortName: webbff
-    imageRepo: 'webapigw'
-    skip: false
-  - serviceName: 'rewards-registration-api'
-    serviceShortName: rewardsregistrationapi
-    imageRepo: 'rewards.registration.api'
-    skip: eq(variables['deployWindows'], 'false')
+  - name: services
+    value:
+    - serviceShortName: productsapi
+      serviceName: 'products-api'
+      imageRepo: 'product.api'
+      skip: false
+    - serviceShortName: couponsapi
+      serviceName: 'coupons-api'
+      imageRepo: 'coupon.api'
+      skip: false
+  # - serviceName: 'profiles-api'
+  #   serviceShortName: profilesapi
+  #   imageRepo: 'profile.api'
+  #   skip: false
+  # - serviceName: 'popular-products-api'
+  #   serviceShortName: popularproductsapi
+  #   imageRepo: 'popular-product.api'
+  #   skip: false
+  # - serviceName: 'stock-api'
+  #   serviceShortName: stockapi
+  #   imageRepo: 'stock.api'
+  #   skip: false
+  # - serviceName: 'image-classifier-api'
+  #   serviceShortName: imageclassifierapi
+  #   imageRepo: 'image-classifier.api'
+  #   skip: false
+  # - serviceName: 'cart-api'
+  #   serviceShortName: cartapi
+  #   acrName: $(acrName)
+  #   imageRepo: 'cart.api'
+  #   skip: false
+  # - serviceName: 'login-api'
+  #   serviceShortName: loginapi
+  #   imageRepo: 'login.api'
+  #   skip: false
+  # - serviceName: 'mobilebff'
+  #   serviceShortName: mobilebff
+  #   imageRepo: 'mobileapigw'
+  #   skip: false
+  # - serviceName: 'webbff'
+  #   serviceShortName: webbff
+  #   imageRepo: 'webapigw'
+  #   skip: false
+  # - serviceName: 'rewards-registration-api'
+  #   serviceShortName: rewardsregistrationapi
+  #   imageRepo: 'rewards.registration.api'
+  #   skip: eq(variables['deployWindows'], 'false')
 
 stages:
 - stage: build
