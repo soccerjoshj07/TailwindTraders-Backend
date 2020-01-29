@@ -17,52 +17,6 @@ variables:
   deployfrom: 'Deploy'
   tagOverride: '1.0.32' # ''
   tag: $[coalesce(variables['tagOverride'], variables['build.buildnumber'])]
-  services:
-    - serviceShortName: productsapi
-      serviceName: 'products-api'
-      imageRepo: 'product.api'
-      skip: false
-    - serviceShortName: couponsapi
-      serviceName: 'coupons-api'
-      imageRepo: 'coupon.api'
-      skip: false
-  # - serviceName: 'profiles-api'
-  #   serviceShortName: profilesapi
-  #   imageRepo: 'profile.api'
-  #   skip: false
-  # - serviceName: 'popular-products-api'
-  #   serviceShortName: popularproductsapi
-  #   imageRepo: 'popular-product.api'
-  #   skip: false
-  # - serviceName: 'stock-api'
-  #   serviceShortName: stockapi
-  #   imageRepo: 'stock.api'
-  #   skip: false
-  # - serviceName: 'image-classifier-api'
-  #   serviceShortName: imageclassifierapi
-  #   imageRepo: 'image-classifier.api'
-  #   skip: false
-  # - serviceName: 'cart-api'
-  #   serviceShortName: cartapi
-  #   acrName: $(acrName)
-  #   imageRepo: 'cart.api'
-  #   skip: false
-  # - serviceName: 'login-api'
-  #   serviceShortName: loginapi
-  #   imageRepo: 'login.api'
-  #   skip: false
-  # - serviceName: 'mobilebff'
-  #   serviceShortName: mobilebff
-  #   imageRepo: 'mobileapigw'
-  #   skip: false
-  # - serviceName: 'webbff'
-  #   serviceShortName: webbff
-  #   imageRepo: 'webapigw'
-  #   skip: false
-  # - serviceName: 'rewards-registration-api'
-  #   serviceShortName: rewardsregistrationapi
-  #   imageRepo: 'rewards.registration.api'
-  #   skip: eq(variables['deployWindows'], 'false')
 
 stages:
 - stage: build
@@ -188,18 +142,59 @@ stages:
             inputs:
               action: deploy
               manifests: $(Build.SourcesDirectory)/Deploy/helm/ttsa.yaml  ## has the name of the acr secret hard-coded
-          - ${{ each s in variables.services }}:
-            - template: templates/step-deploy-container-service.yml
-              parameters:
-                serviceName: ${{ s.serviceName }}
-                serviceShortName: ${{ s.serviceShortName }}
-                imageRepo: ${{ s.imageRepo }}
-                skip: ${{ s.skip }}
+          - template: templates/step-deploy-container-service.yml
+            parameters:
+              acrName: $(acrName)
+              environment: dev
+              ingressHost: $(IngressHost)
+              tag: $(tag)
+              autoscale: $(autoscale)
+              services:
+              - serviceName: 'products-api'
+                serviceShortName: productsapi
+                imageRepo: 'product.api'
+                skip: false
+              - serviceName: 'coupons-api'
+                serviceShortName: couponsapi
+                imageRepo: 'coupon.api'
+                skip: false
+              - serviceName: 'profiles-api'
+                serviceShortName: profilesapi
+                imageRepo: 'profile.api'
+                skip: false
+              - serviceName: 'popular-products-api'
+                serviceShortName: popularproductsapi
+                imageRepo: 'popular-product.api'
+                skip: false
+              - serviceName: 'stock-api'
+                serviceShortName: stockapi
+                imageRepo: 'stock.api'
+                skip: false
+              - serviceName: 'image-classifier-api'
+                serviceShortName: imageclassifierapi
+                imageRepo: 'image-classifier.api'
+                skip: false
+              - serviceName: 'cart-api'
+                serviceShortName: cartapi
                 acrName: $(acrName)
-                environment: dev
-                ingressHost: $(IngressHost)
-                tag: $(tag)
-                autoscale: $(autoscale)
+                imageRepo: 'cart.api'
+                skip: false
+              - serviceName: 'login-api'
+                serviceShortName: loginapi
+                imageRepo: 'login.api'
+                skip: false
+              - serviceName: 'mobilebff'
+                serviceShortName: mobilebff
+                imageRepo: 'mobileapigw'
+                skip: false
+              - serviceName: 'webbff'
+                serviceShortName: webbff
+                imageRepo: 'webapigw'
+                skip: false
+              - serviceName: 'rewards-registration-api'
+                serviceShortName: rewardsregistrationapi
+                imageRepo: 'rewards.registration.api'
+                skip: $(deployWindows)
           # - template: templates/step-deploy-container-service.yml
           #   parameters:
           #     serviceName: 'products-api'
