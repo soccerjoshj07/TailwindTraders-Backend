@@ -1,6 +1,6 @@
 # Tailwind Traders Backend Services
 
-[![Build status](https://dev.azure.com/TailwindTraders/Backend/_apis/build/status/Backend-CI)](https://dev.azure.com/TailwindTraders/Backend/_build/latest?definitionId=26)
+[![Build Status](https://dev.azure.com/10m/Demos/_apis/build/status/Tailwind/backend-apps?branchName=master)](https://dev.azure.com/10m/Demos/_build/latest?definitionId=98&branchName=master)
 
 This repository contains all code + deployment scripts for the Tailwind Traders Backend.
 
