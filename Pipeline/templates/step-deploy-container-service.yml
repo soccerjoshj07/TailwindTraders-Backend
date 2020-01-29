@@ -10,26 +10,26 @@ parameters:
   services: []
 
 steps:
-  - ${{ each s in parameters.services }}:
-    - ${{ if eq(s.skip, 'false') }}:
-      - task: KubernetesManifest@0
-        displayName: Bake ${{ s.serviceName }} manifest
-        name: bake_${{ s.serviceShortName }}
-        inputs:
-          action: bake
-          renderType: helm2
-          releaseName: ${{ s.serviceName }}-${{ parameters.environment }}
-          helmChart: $(Build.SourcesDirectory)/Deploy/helm/${{ s.serviceName }}
-          overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
-          overrides: |
-            ingress.hosts:{'${{ parameters.ingressHost }}'}
-            image.repository:${{ parameters.acrName }}.azurecr.io/${{ s.imageRepo }}
-            image.tag:${{ parameters.tag }}
-            hpa.activated:${{ parameters.autoscale }}
-            ingress.tls[0].secretName:tt-letsencrypt-staging
-            ingress.tls[0].hosts:{'${{ parameters.ingressHost }}'}
-      - task: KubernetesManifest@0
-        displayName: Deploy ${{ s.serviceName }} to k8s
-        inputs:
-          manifests: $(bake_${{ s.serviceShortName }}.manifestsBundle)
-          imagePullSecrets: $(imagePullSecret)
+- ${{ each s in parameters.services }}:
+  - ${{ if eq(s.skip, 'false') }}:
+    - task: KubernetesManifest@0
+      displayName: Bake ${{ s.serviceName }} manifest
+      name: bake_${{ s.serviceShortName }}
+      inputs:
+        action: bake
+        renderType: helm2
+        releaseName: ${{ s.serviceName }}-${{ parameters.environment }}
+        helmChart: $(Build.SourcesDirectory)/Deploy/helm/${{ s.serviceName }}
+        overrideFiles: $(Build.SourcesDirectory)/Deploy/helm/__values/values.yml
+        overrides: |
+          ingress.hosts:{'${{ parameters.ingressHost }}'}
+          image.repository:${{ parameters.acrName }}.azurecr.io/${{ s.imageRepo }}
+          image.tag:${{ parameters.tag }}
+          hpa.activated:${{ parameters.autoscale }}
+          ingress.tls[0].secretName:tt-letsencrypt-staging
+          ingress.tls[0].hosts:{'${{ parameters.ingressHost }}'}
+    - task: KubernetesManifest@0
+      displayName: Deploy ${{ s.serviceName }} to k8s
+      inputs:
+        manifests: $(bake_${{ s.serviceShortName }}.manifestsBundle)
+        imagePullSecrets: $(imagePullSecret)
